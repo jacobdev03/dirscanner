@@ -4,6 +4,7 @@ import argparse
 import requests
 import sys
 
+
 if (len(sys.argv) < 5):
     print('Please provide url and wordlist')
 
@@ -31,22 +32,19 @@ wordlist = args.wordlist
 def send_requests():
     with open(wordlist) as file:
         lines = file.readlines()
+        lines_count = len(lines)
+        request_count = 0
+
         for line in lines:
             line = line.rstrip()
             req = requests.get(f"{url}/{line}")
+            request_count += 1
+            print(f"{request_count}/{lines_count}", end="\r")
             if req.status_code == 200:
                 print(f"{url}/{line}")
             else:
                 pass
 
 
-send_requests()
-
-
-
-
-
-
-
-
-
+if __name__=='__main__':
+   send_requests()
