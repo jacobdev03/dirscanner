@@ -10,20 +10,12 @@ if (len(sys.argv) < 5):
 
 parser = argparse.ArgumentParser(description='dirb')
 
-parser.add_argument(
-    '-u',
-     '--url',
-     type=str,
-     help='pass the url to scan'
-    )
+parser.add_argument('-u', '--url', type=str, help='pass the url to scan')
+parser.add_argument('-w', '--wordlist', help="pass the wordlist")
 
-parser.add_argument(
-    '-w',
-    '--wordlist',
-    help="pass the wordlist"
-)
 
 args = parser.parse_args()
+
 
 url = args.url
 wordlist = args.wordlist
@@ -37,7 +29,12 @@ def send_requests():
 
         for line in lines:
             line = line.rstrip()
-            req = requests.get(f"{url}/{line}")
+            try:
+                req = requests.get(f"{url}/{line}")
+            except requests.exceptions.ConnectionError:
+                print("Host seems to be down, try again")
+                break
+
             request_count += 1
             print(f"{request_count}/{lines_count}", end="\r")
             if req.status_code == 200:
@@ -46,5 +43,5 @@ def send_requests():
                 pass
 
 
-if __name__=='__main__':
-   send_requests()
+if __name__ == '__main__':
+    send_requests()
