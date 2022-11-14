@@ -2,7 +2,10 @@
 
 import argparse
 import requests
+import sys
 
+if (len(sys.argv) < 5):
+    print('Please provide url and wordlist')
 
 parser = argparse.ArgumentParser(description='dirb')
 
@@ -20,6 +23,29 @@ parser.add_argument(
 )
 
 args = parser.parse_args()
+
+url = args.url
+wordlist = args.wordlist
+
+
+def send_requests():
+    with open(wordlist) as file:
+        lines = file.readlines()
+        for line in lines:
+            line = line.rstrip()
+            req = requests.get(f"{url}/{line}")
+            if req.status_code == 200:
+                print(f"{url}/{line}")
+            else:
+                pass
+
+
+send_requests()
+
+
+
+
+
 
 
 
